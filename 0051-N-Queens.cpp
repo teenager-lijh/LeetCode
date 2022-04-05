@@ -89,7 +89,7 @@ int main()
     cout << "N Queens" << endl;
 
     Solution solution;
-    vector<vector<string>> res = solution.solveNQueens(n);
+    vector<vector<string>> res = solution.solveNQueens(10);
 
     for(auto solution : res){
         cout << "solution :" << endl;
