@@ -8,6 +8,7 @@ using namespace std;
 class Solution {
 public:
 
+    // 用于标记某个节点是否被访问过
     bool visited[10][10][10][10];
 
     void visite(string s) {
@@ -54,32 +55,60 @@ public:
         // 每个节点的相邻节点有 8 个
     
         // 初始化为每个节点都没有访问过
+        // 数组整个都初始化为 0 就代表了是 false
         memset(visited, 0, sizeof(visited));
 
         // 在 visited 中初始化不可达的顶点
+        // 遍历 deadends 中的每一个密码状态
+        // 把这些节点都标记为已经入队过
+        // 其实就是在说，这些结果不能够再被访问了
+        // 因为 BFS 每次都是从队列中取一个节点来访问
+        // 不能够入队就代表了不会从队列中被访问
         for(auto s : deadends) {
             visite(s);
         }
 
+        // 极端情况的考虑
+        // 如果 deadends 中存在 0000
+        // 又由于我们密码锁的初始状态就是 0000
+        // 所以我们无法从 0000 访问到任何节点
+        // 则程序返回 -1 表示无解
         if(isVisted(string("0000")))
             return -1;
             
+        // step 记录的是
+        // 当前正在遍历的这些节点
+        // 从 0000 状态开始
+        // 最少需要拨动几次才能够触达
         // 初始化为拨动 0 次
+        // 因为 0000 状态不需要拨动
+        // 0000 状态就是最初始的状态
         int step = 0;
+
+        // 用 start 字符串记录初始状态 0000
         string start = "0000";
         
+        // BFS 用到的辅助队列 q
         queue<string> q;
+
+        // 让初始状态入队
         q.push(start);
+
+        // 并且标记该状态已经入队过了
         visite(start);
 
+        // 队列不为空则 BFS 未结束
         while(!q.empty()) {
+            // 通过 size 可以知道当前遍历的那一层有多少个节点
+            // 每遍历完成 size 个节点后
+            // step 就应该增加 1 
             int sz = q.size();
 
             for(int i = 0 ; i < sz ; ++i) {
+                // 从队头取一个节点出来
                 string cur = q.front();
+                // 并且删除队头节点
                 q.pop();
-
-                // cout << "cur : " << cur << endl;
 
                 // 判断是否是目标 target
                 if(cur == target)
@@ -91,22 +120,26 @@ public:
                 // 共有 4 个拨轮
                 // 每个拨轮可以向上或向下两种拨动方式
                 for(int j = 0 ; j < 4 ; ++j) {
-                    // cout << "for 4 " << "j : " << j << endl;
                     string plus_cur = plusOne(cur, j);
+                    // 入队之前要保证此节点没有被入队过
                     if(!isVisted(plus_cur)) {
                         q.push(plus_cur);
+                        // 入队后标记此节点已经入队过了
                         visite(plus_cur);
                     }
 
                     string minus_cur = minusOne(cur, j);
+                    // 入队之前要保证此节点没有被入队过
                     if(!isVisted(minus_cur)) {
                         q.push(minus_cur);
+                        // 入队后标记此节点已经入队过了
                         visite(minus_cur);
                     }
                 }
 
             }
 
+            // 维护 step 变量
             step += 1;
         }
 
