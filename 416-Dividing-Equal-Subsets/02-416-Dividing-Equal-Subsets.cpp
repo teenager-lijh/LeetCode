@@ -43,7 +43,6 @@ public:
 
         return dp[C];
     }
-
 };
 
 int main()
