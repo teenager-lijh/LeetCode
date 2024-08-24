@@ -1,4 +1,6 @@
-*.exe
-.idea/
-CMakeLists.txt
-cmake-build-debug/
+*main*
+!*.cpp*
+*.idea*
+*CMakeLists.txt*
+*cmake-build-debug*
+*.DS_Store*
